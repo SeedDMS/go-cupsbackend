@@ -1,0 +1,5 @@
+printer-driver-seeddms (0.0.1-1) unstable; urgency=medium
+
+  * First Debian release.
+
+ -- Uwe Steinmann <steinm@debian.org>  Tue, 04 Apr 2023 07:05:44 +0200

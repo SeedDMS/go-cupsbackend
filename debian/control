@@ -1,0 +1,36 @@
+Source: printer-driver-seeddms
+Maintainer: Uwe Steinmann <steinm@debian.org>
+Uploaders: Uwe Steinmann <steinm@debian.org>
+Section: graphics
+Testsuite: autopkgtest-pkg-go
+Priority: optional
+Build-Depends: debhelper-compat (= 13),
+               dh-golang,
+               golang-any,
+               golang-github-spf13-viper-dev
+Standards-Version: 4.5.0
+Vcs-Browser: https://salsa.debian.org/go-team/packages/tml
+Vcs-Git: https://salsa.debian.org/go-team/packages/tml.git
+Homepage: https://www.seeddms.org
+Rules-Requires-Root: no
+XS-Go-Import-Path: seeddms.org/seeddms/cupsbackend
+
+Package: golang-seeddms-seeddms-cups-dev
+Architecture: all
+Multi-Arch: foreign
+Depends: golang-github-spf13-viper-dev,
+         ${misc:Depends}
+Description: printer driver for uploading documents into SeedDMS via CUPS
+ printer-driver-seeddms provides a SeedDMS upload backend to CUPS which
+ converts a document into PDF and uploads it into SeedDMS. This can be used as a
+ virtual printer in a paperless network or to perform testing on CUPS.
+
+Package: printer-driver-seeddms
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Built-Using: ${misc:Built-Using}
+Description: printer driver for uploading documents into SeedDMS via CUPS
+ printer-driver-seeddms provides a SeedDMS upload backend to CUPS which
+ converts a document into PDF and uploads it into SeedDMS. This can be used as a
+ virtual printer in a paperless network or to perform testing on CUPS.

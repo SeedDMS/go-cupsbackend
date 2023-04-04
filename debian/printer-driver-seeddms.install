@@ -1,0 +1,3 @@
+debian/*.ppd-updater  usr/share/cups/ppd-updaters
+usr/bin/seeddms usr/lib/cups/backend
+*.ppd   usr/share/ppd/seeddms

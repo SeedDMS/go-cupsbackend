@@ -1,0 +1,2 @@
+DRIVER_REGEXP='^lsb/usr/seeddms/'
+GENNICKNAME_REGEXP=

@@ -1,0 +1,11 @@
+default:
+  Url: http://your-seeddms-host/restapi/index.php
+  ApiKey: your-secret-key
+  FolderId: 1
+  LogLevel: debug
+
+Another-Printer:
+  Url: http://your-seeddms-host/restapi/index.php
+  User: admin
+  Password: admin
+  FolderId: 1

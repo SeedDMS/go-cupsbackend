@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --builddirectory=_build --buildsystem=golang --with=golang
+
+override_dh_auto_install:
+	dh_auto_install
+	mv $(CURDIR)/debian/tmp/usr/bin/cupsbackend $(CURDIR)/debian/tmp/usr/bin/seeddms

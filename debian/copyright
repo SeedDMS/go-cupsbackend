@@ -1,0 +1,14 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: printer-driver-seeddms
+Upstream-Contact: Uwe Steinmann <steinm@debian.org>
+Source: https://github.com/SeedDMS/go-cupsbackend
+
+Files: *
+Copyright: 2023 Uwe Steinmann <steinm@debian.org>
+License: GPL-3+
+
+Files: debian/*
+Copyright: 2023 Uwe Steinmann <steinm@debian.org>
+License: GPL-3+
+Comment: Debian packaging is licensed under the same terms as upstream
+
