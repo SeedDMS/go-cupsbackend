@@ -1,9 +1,10 @@
+# Cups backend for SeedDMS
+
 This is a cups backend to add SeedDMS as a printer. Printing to
 a printer based on this backend will upload the printed file into
 a SeedDMS installation.
 
-How it workѕ
-============
+## How it workѕ
 
 If you setup a printer in cups use the ppd file `seeddms-pdf.ppd`
 shipped with this backend. It contains the line
@@ -39,8 +40,7 @@ the printing application does it itself (like web browsers do). The
 PPD file `seeddms-passthru.ppd` sets `cupsFilter2` for `image/png`,
 `image/jpeg`, `application/pdf` and `application\postscript`.
 
-Configuration
-==============
+## Configuration
 
 This backend reads a configuration file `.seeddms-cups.yaml` from
 either `/etc/seeddms-cups` or the user's home directory. The user is
@@ -50,19 +50,35 @@ computer, the backend can easily access the user's home directory and
 read the configuration file. But if the client runs on a different
 computer, the user is likely to be somebody not available on the
 server. If the client is a mobile phone, the user may just be the name
-of the phone. In any of those case the backend will not find the
+of the phone. In any of those cases the backend will not find the
 user's home directory and therefore will read the configuration from
 `/etc/seeddms-cup/.seeddms-cups.yaml`
 
 This configuration file may contain several sections. Each for a
 configured printer in cups. If none of the section names match the
-printer name, the default section will be used.
+printer name, the `default` section will be used.
 
 Each section must at least define the parameters:
 
-  * Url (Url of restapi)
-  * ApiKey or User and Password
-  * FolderId (Id of folder to store printed documents)
+  * `Url` (Url of restapi)
+  * `ApiKey` or User and Password
+  * `FolderId` (Id of folder to store printed documents)
 
 There is an example configuration `seeddms-cups.yaml`.
+
+## Pitfalls
+
+Systems having AppArmor installed may prevent calling the backend
+because it request access on files not allowed for `/usr/sbin/cupsd`.
+Check your system messages with `dmesg`. If it contains lines like
+
+   [39772.258276] audit: type=1400 audit(1709830581.956:9349): apparmor="DENIED" operation="open" class="file" profile="/usr/sbin/cupsd" name="/proc/241961/cgroup" pid=241961 comm="cupsd" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+
+If it does, then AppArmor blocks the execution of the backend script.
+On Debian the above example will require to add a line
+
+@{PROC}/*/cgroup r,
+
+to your `/etc/apparmor.d/usr.sbin.cupsd`. There are already similar lines, but
+none of them allows read access on `/proc/<number>/cgroup`
 
