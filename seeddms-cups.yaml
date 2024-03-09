@@ -1,3 +1,23 @@
+#
+# Configuration file for SeedDMS cups backend
+#
+# This file may contain separate configurations for each
+# printer in cups using the SeedDMS cupѕ backend.
+# The printer's name must match the name of the configuration
+# The `default` configuration is used if no other configuration
+# matches
+#
+# This file may either be placed in the user's home directory
+# or system wide in `/etc/seeddms-cups`
+#
+# Each configuration may contain the following fields
+# `Url`: Url of SeedDMS REST API
+# ApiKey: Access key for REST API
+# User: User used for login (not needed if ApiKey is given)
+# Password: Password used for login (not needed if ApiKey is given)
+# FolderId: Id of upload folder
+# LogLevel: Level of debugging (can be `debug`, `info`)
+#
 default:
   Url: http://your-seeddms-host/restapi/index.php
   ApiKey: your-secret-key
