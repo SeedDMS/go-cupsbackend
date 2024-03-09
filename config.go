@@ -7,6 +7,7 @@ import (
     "os/user"
     "log"
     "github.com/spf13/viper"
+    "github.com/flytam/filenamify"
 )
 
 type Config struct {
@@ -21,25 +22,34 @@ type Config struct {
 
 func NewConfig(username string, options string) (*Config, error) {
 
-    viper.SetConfigName(".seeddms-cups.yaml")
+    viper.SetConfigName("printers.yaml")
     viper.SetConfigType("yaml")
+    log.Printf("Checking for configuration file of user \"%s\"", username)
     if user, err := user.Lookup(username); err == nil {
-        viper.AddConfigPath(user.HomeDir)
+        viper.AddConfigPath(user.HomeDir + "/.config/seeddms-cups/")
     }
-    viper.AddConfigPath("/etc/seeddms-cups/")
-    viper.AddConfigPath(".")
     if err := viper.ReadInConfig(); err != nil {
         if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-            return nil, fmt.Errorf("could not find configuration file: %w\n", err)
+            log.Printf("Configuration file not found in user's home, checking for system wide configuration.")
+            userpath, _ := filenamify.Filenamify(username, filenamify.Options{})
+            viper.AddConfigPath("/etc/seeddms-cups/" + userpath + "/")
+            viper.AddConfigPath("/etc/seeddms-cups/")
+            if err := viper.ReadInConfig(); err != nil {
+                if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+                    return nil, fmt.Errorf("Could not find configuration file: %w\n", err)
+                } else {
+                    return nil, fmt.Errorf("Fatal error in config file: %w\n", err)
+                }
+            }
         } else {
-            return nil, fmt.Errorf("fatal error in config file: %w\n", err)
+            return nil, fmt.Errorf("Fatal error in config file: %w\n", err)
         }
     }
     log.Printf("Using configuration file \"%s\"", viper.ConfigFileUsed())
 
     printer := os.Getenv("PRINTER")
     if printer == "" {
-        log.Print("Environment varialbe PRINTER not set, using defaults")
+        log.Print("Environment variable PRINTER not set, using defaults")
         printer = "default"
     }
     cfgSection := viper.Sub(printer)
