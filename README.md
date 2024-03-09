@@ -42,17 +42,35 @@ PPD file `seeddms-passthru.ppd` sets `cupsFilter2` for `image/png`,
 
 ## Configuration
 
-This backend reads a configuration file `.seeddms-cups.yaml` from
-either `/etc/seeddms-cups` or the user's home directory. The user is
+The path and the name of the configuration file has been changed in 0.0.2 for
+more flexibility and a more common paths. The configuration file in the
+user's home directory must be located in `.config/seeddms-cups/printers.yaml`
+The system wide configuration must be in `/etc/seeddms-cups/printers.yaml`.
+Additionally, the new path `/etc/seeddms-cups/<username>/printers.yaml`
+will be checked for a configuration file. The precedence of the files is
+
+1. User's home directory
+2. `/etc/seeddms-cups/<username>/printers.yaml`
+3. `/etc/seeddms-cups/printers.yaml`
+
+Before version 0.0.2 the
+backend read the configuration file `.seeddms-cups.yaml` from
+either `/etc/seeddms-cups` or the user's home directory.
+
+The user is
 the person issuing the print job.  If both, the cups server (having
 the seeddms backend installed) and the client run on the same
-computer, the backend can easily access the user's home directory and
+computer, the user will be an existent user on the system and the
+backend can easily access the user's home directory and
 read the configuration file. But if the client runs on a different
 computer, the user is likely to be somebody not available on the
-server. If the client is a mobile phone, the user may just be the name
-of the phone. In any of those cases the backend will not find the
-user's home directory and therefore will read the configuration from
-`/etc/seeddms-cup/.seeddms-cups.yaml`
+server. Actually, if the client is for example a mobile phone, the user name
+is often just be set to the name
+of the phone. So, printing from your 'Redmi Note 8T' will set the user
+to 'Redmi Note 8T'. In any of those cases the backend will not find the
+user's home directory and therefore will read the system wide configuration.
+Since version 0.0.2 the location of the configuration file can also be user
+dependent in `/etc/seeddms-cups/<username>/printers.yaml`.
 
 This configuration file may contain several sections. Each for a
 configured printer in cups. If none of the section names match the
@@ -61,10 +79,20 @@ printer name, the `default` section will be used.
 Each section must at least define the parameters:
 
   * `Url` (Url of restapi)
-  * `ApiKey` or User and Password
+  * `ApiKey` or `User` and `Password`
   * `FolderId` (Id of folder to store printed documents)
+  * `LogLevel` (set to `debug` for more verbose logging)
 
-There is an example configuration `seeddms-cups.yaml`.
+Example:
+
+    default:
+      Url: http://your-seeddms-host/restapi/index.php
+      ApiKey: your-secret-key
+      FolderId: 1
+      LogLevel: debug
+   
+There is an example configuration `seeddms-cups.yaml`. Copy it into one
+of the checked locations on your server and adjust it to your needs.
 
 ## Pitfalls
 
@@ -82,3 +110,13 @@ On Debian the above example will require to add a line
 to your `/etc/apparmor.d/usr.sbin.cupsd`. There are already similar lines, but
 none of them allows read access on `/proc/<number>/cgroup`
 
+## Debuging
+
+This cups backend logs many usefull information to the sys logger. If the
+log level is set to `debug` it will also log the environment variables, which
+contain most of the revelant data for the backend. On recent debian systems (>= 12)
+just run 
+
+     journalctl -f -u cups
+
+to monitor the execution of the backend.
