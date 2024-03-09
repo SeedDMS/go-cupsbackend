@@ -61,9 +61,11 @@ func main() {
     }
 
     if  len(args) == 7 {
+        // In raw mode the file to print is passed as 7th parameter
         log.Printf("Running in raw mode")
         err = cupsbackend.Raw(cfg, args[1], args[2], args[3], args[5], args[6])
     } else {
+        // In print mode the file content is read from stdin
         log.Printf("Running in print mode")
         err = cupsbackend.Print(cfg, args[1], args[2], args[3], args[5])
     }
