@@ -46,7 +46,7 @@ shipped with this backend. It contains the line
     \*cupsFilter:    "application/vnd.cups-pdf 0 -"
 
 which tells cups that application/vnd.cups-pdf can be send straight to
-seeddms. Without that line cups expects seeddms to be a postscript
+SeedDMS. Without that line cups expects SeedDMS to be a postscript
 printer and runs the filter pdftops before passing the output to the
 backend.  In that case `FINAL_CONTENT_TYPE` will be set to
 application/vnd.cups-postscript and the backend will convert it back
@@ -92,7 +92,7 @@ backend read the configuration file `.seeddms-cups.yaml` from
 either `/etc/seeddms-cups` or the user's home directory.
 
 The user is the person issuing the print job.  If both, the cups
-server (having the seeddms backend installed) and the client run on
+server (having the SeedDMS backend installed) and the client run on
 the same computer, the user will be an existent user on the system and
 the backend can easily access the user's home directory and read the
 configuration file. But if the client runs on a different computer,
@@ -118,7 +118,7 @@ printer name, the `default` section will be used.
 
 Each section must at least define the parameters:
 
-  * `Url` (Url of restapi)
+  * `Url` (URL of REST API)
   * `ApiKey` or `User` and `Password`
   * `FolderId` (Id of folder to store printed documents)
   * `LogLevel` (set to `debug` for more verbose logging)
@@ -156,11 +156,11 @@ On Debian the above example will require to add a line
 to your `/etc/apparmor.d/usr.sbin.cupsd`. There are already similar lines, but
 none of them allows read access on `/proc/<number>/cgroup`
 
-## Debuging
+## Debugging
 
-This cups backend logs many usefull information to the sys logger. If the
+This cups backend logs many useful information to the sys logger. If the
 log level is set to `debug` it will also log the environment variables, which
-contain most of the revelant data for the backend. On recent debian systems (>= 12)
+contain most of the relevant data for the backend. On recent debian systems (>= 12)
 just run 
 
      journalctl -f -u cups
