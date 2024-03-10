@@ -1,10 +1,44 @@
 # Cups backend for SeedDMS
 
 This is a cups backend to add SeedDMS as a printer. Printing to
-a printer based on this backend will upload the printed file into
-a SeedDMS installation.
+a printer based on this backend will not physically print the
+document but upload the printed file into SeedDMS.
 
-## How it workѕ
+On debian just install the .deb file with
+
+    sudo dpkg -i printer-driver-seeddms_0.0.2-1_amd64.deb
+
+When adding a new printer in cups you will be offered a local printer
+called 'SeedDMS'. Choose a name, description, etc. and allow
+network access if you like. When choosing a manufacturer, 
+select 'Generic' and choose 'Generic SeedDMS Printer PDF'
+as ppd file, which is the best choice in most cases.
+
+Once the printer is added, you will need a configuration which sets
+the location of your SeedDMS, the API key and the folder to upload
+the printed file. Configuration files can be at several places (see
+below). For simplicity, we assume a global configuration in
+`/etc/seeddms-cups/printers.yaml`. If there is just one SeedDMS
+printer, it will be sufficient to have a default section in your
+configuration
+
+    default:
+      Url: http://your-seeddms-host/restapi/index.php
+      ApiKey: your-secret-key
+      FolderId: 1
+
+If you have more SeedDMS printers replace `default` with the name
+of the printer, in order to have different configurations.
+
+Afterwards print your first file into SeedDMS (assuming your printer
+is named `SeedDMS`)
+
+    lp -d SeedDMS somefile.pdf
+
+Though the printer is only available in your local network, but the
+SeedDMS installation can be at any location accessible by http.
+
+## How it workѕ internally
 
 If you setup a printer in cups use the ppd file `seeddms-pdf.ppd`
 shipped with this backend. It contains the line
@@ -12,7 +46,7 @@ shipped with this backend. It contains the line
     \*cupsFilter:    "application/vnd.cups-pdf 0 -"
 
 which tells cups that application/vnd.cups-pdf can be send straight to
-seeddms.  Without that line cups expects seeddms to be a postscript
+seeddms. Without that line cups expects seeddms to be a postscript
 printer and runs the filter pdftops before passing the output to the
 backend.  In that case `FINAL_CONTENT_TYPE` will be set to
 application/vnd.cups-postscript and the backend will convert it back
@@ -57,20 +91,26 @@ Before version 0.0.2 the
 backend read the configuration file `.seeddms-cups.yaml` from
 either `/etc/seeddms-cups` or the user's home directory.
 
-The user is
-the person issuing the print job.  If both, the cups server (having
-the seeddms backend installed) and the client run on the same
-computer, the user will be an existent user on the system and the
-backend can easily access the user's home directory and
-read the configuration file. But if the client runs on a different
-computer, the user is likely to be somebody not available on the
-server. Actually, if the client is for example a mobile phone, the user name
-is often just be set to the name
-of the phone. So, printing from your 'Redmi Note 8T' will set the user
-to 'Redmi Note 8T'. In any of those cases the backend will not find the
-user's home directory and therefore will read the system wide configuration.
-Since version 0.0.2 the location of the configuration file can also be user
-dependent in `/etc/seeddms-cups/<username>/printers.yaml`.
+The user is the person issuing the print job.  If both, the cups
+server (having the seeddms backend installed) and the client run on
+the same computer, the user will be an existent user on the system and
+the backend can easily access the user's home directory and read the
+configuration file. But if the client runs on a different computer,
+the user is likely to be somebody not available on the cups server.
+Actually, if the client is for example a mobile phone, the user name
+is often just be set to the model name of the phone. Unfortunately,
+this name cannot be changed.  So, printing from your 'Redmi Note 8T'
+will set the user to 'Redmi Note 8T', but other phones may have more
+cryptic model names. In any of those cases the backend will not find
+the user's home directory (unless there is by accident a user with
+that unusual name) and therefore will read the system wide
+configuration.  Since version 0.0.2 the path of the configuration file
+can also be user dependent in
+`/etc/seeddms-cups/<username>/printers.yaml`.  Needless to say, that
+this way of choosing the configuration can be quite dangerous and may
+enable users to upload documents into SeedDMS which are not allowed
+to. Hence, always check the uploaded documents in SeedDMS before
+processing them any further.
 
 This configuration file may contain several sections. Each for a
 configured printer in cups. If none of the section names match the
@@ -92,7 +132,13 @@ Example:
       LogLevel: debug
    
 There is an example configuration `seeddms-cups.yaml`. Copy it into one
-of the checked locations on your server and adjust it to your needs.
+of the possible locations on your server and adjust it to your needs.
+
+Keep in mind, that the configuration file contains an API key which
+may not be readable by ordinary user. Change the file mode of the
+configuration to `600`.
+
+   chmod 600 /etc/seeddms-cups/printers.yaml
 
 ## Pitfalls
 
@@ -119,4 +165,7 @@ just run
 
      journalctl -f -u cups
 
-to monitor the execution of the backend.
+to monitor the execution of the backend. If syslog is still saved to a file
+in `/var/log/syslog` then run
+
+     tail -f /var/log/syslog
