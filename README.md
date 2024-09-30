@@ -88,7 +88,7 @@ will be checked for a configuration file. The precedence of the files is
 3. `/etc/seeddms-cups/printers.yaml`
 
 Before version 0.0.2 the
-backend read the configuration file `.seeddms-cups.yaml` from
+backend reads the configuration file `.seeddms-cups.yaml` from
 either `/etc/seeddms-cups` or the user's home directory.
 
 The user is the person issuing the print job.  If both, the cups
@@ -98,7 +98,7 @@ the backend can easily access the user's home directory and read the
 configuration file. But if the client runs on a different computer,
 the user is likely to be somebody not available on the cups server.
 Actually, if the client is for example a mobile phone, the user name
-is often just be set to the model name of the phone. Unfortunately,
+is often just set to the model name of the phone. Unfortunately,
 this name cannot be changed.  So, printing from your 'Redmi Note 8T'
 will set the user to 'Redmi Note 8T', but other phones may have more
 cryptic model names. In any of those cases the backend will not find
