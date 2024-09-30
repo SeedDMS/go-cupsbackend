@@ -1,0 +1,5 @@
+# 0.0.3
+
+* add new config paramter 'PreserveOptions' which defaults to false
+  if true, it stores the print options in the comment of the document,
+  which was the default till 0.0.2
