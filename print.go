@@ -19,9 +19,13 @@ func Print(cfg *Config, jobid string, user string, title string, options string)
     }
     extraParams := map[string]string{
         "name":        title,
-        "comment":     "User: "+user+"\nJob-Id: "+jobid+"\nOptions: "+options,
+        "comment":     "",
         "filename":    "cups-"+user+"-"+jobid,
     }
+    if(cfg.preserveOptions) {
+        extraParams["comment"] += "User: "+user+"\nJob-Id: "+jobid+"\nOptions: "+options
+    }
+
     contenttype := os.Getenv("CONTENT_TYPE")
     if extension, _ := mime.ExtensionsByType(contenttype); extension != nil {
         extraParams["filename"] += extension[0]

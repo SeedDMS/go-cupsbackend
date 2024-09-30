@@ -16,7 +16,8 @@ type Config struct {
     pwd string
     apikey string
     folderid int
-    rungs bool
+    rungs bool // Run ghostscript
+    preserveOptions bool // set if print options shall be saved in comment
     LogLevel string
 }
 
@@ -74,6 +75,10 @@ func NewConfig(username string, options string) (*Config, error) {
         cfg.rungs = true
     } else {
         cfg.rungs = false
+    }
+    cfg.preserveOptions = false
+    if cfgSection.IsSet("PreserveOptions") || cfgSection.GetBool("PreserveOptions") {
+        cfg.preserveOptions = cfgSection.GetBool("PreserveOptions")
     }
     if !cfgSection.IsSet("LogLevel") {
         cfg.LogLevel = "info"
