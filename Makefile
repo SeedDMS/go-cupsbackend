@@ -31,7 +31,7 @@ stdin:
 dist: clean
 	rm -rf ${PKGNAME}-${VERSION}
 	mkdir ${PKGNAME}-${VERSION}
-	cp -r cupsbackend *.go *.ppd Makefile README.md go.mod go.sum seeddms-cups.yaml ${PKGNAME}-${VERSION}
+	cp -r cupsbackend *.go *.ppd Makefile ChangeLog README.md go.mod go.sum seeddms-cups.yaml ${PKGNAME}-${VERSION}
 	tar czvf ${PKGNAME}-${VERSION}.tar.gz ${PKGNAME}-${VERSION}
 	rm -rf ${PKGNAME}-${VERSION}
 
